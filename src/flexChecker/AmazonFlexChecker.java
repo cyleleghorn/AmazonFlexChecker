@@ -4,20 +4,27 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 
-public class AmazonFlexChecker {
+public class AmazonFlexChecker 
+{
 
 	private JFrame frame;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+	public static void main(String[] args) 
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
 					AmazonFlexChecker window = new AmazonFlexChecker();
 					window.frame.setVisible(true);
-				} catch (Exception e) {
+				} 
+				catch (Exception e) 
+				{
 					e.printStackTrace();
 				}
 			}
@@ -27,14 +34,16 @@ public class AmazonFlexChecker {
 	/**
 	 * Create the application.
 	 */
-	public AmazonFlexChecker() {
+	public AmazonFlexChecker() 
+	{
 		initialize();
 	}
 
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
+	private void initialize() 
+	{
 		frame = new JFrame();
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
