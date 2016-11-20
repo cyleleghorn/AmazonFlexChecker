@@ -31,7 +31,20 @@ public class AmazonFlexChecker
 	public static Preferences prefs;
 	public static String username = "";
 	public static String password = "";
+	public static boolean autoRefresh = true;
+	public static JMenuBar menuBar = new JMenuBar();
+	public static JMenu mnOptions = new JMenu("Options");
+	public static JMenuItem loginInfoMenuItem = new JMenuItem("Amazon Flex Account Information");
+	public static JMenuItem mntmListeningPort = new JMenuItem("Listening Port");
+	public static JMenu mntmAutorefresh = new JMenu("Auto-Refresh");
+	public static JCheckBoxMenuItem chckbxmntmEnableAutorefresh = new JCheckBoxMenuItem("Enable Auto-Refresh");
+	public static JSeparator separator_1 = new JSeparator();
+	public static JLabel lblRefreshIntervalIn = new JLabel("Refresh Interval in Seconds");
+	public static JButton btnApply = new JButton("Apply");
+	public static JSeparator separator = new JSeparator();
+	public static JButton btnRefresh = new JButton("Refresh");
 
+	
 
 	/**
 	 * Launch the application.
@@ -73,10 +86,10 @@ public class AmazonFlexChecker
 		frmAmazonFlexChecker.setBounds(100, 100, 450, 400);
 		frmAmazonFlexChecker.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmAmazonFlexChecker.getContentPane().setLayout(new MigLayout("", "[]", "[]"));
-		
-		
+
+
 		/*   Set the look and feel to windows.  Might use this, might not.
-		
+
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
@@ -84,66 +97,53 @@ public class AmazonFlexChecker
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		*/
-		
+
+		 */
+
 		prefs = Preferences.userNodeForPackage(this.getClass());
 		port = prefs.getInt("PORT", port);
 		refreshInterval = prefs.getInt("RI", refreshInterval);
+		autoRefresh = prefs.getBoolean("AR", autoRefresh);
+		chckbxmntmEnableAutorefresh.setSelected(autoRefresh);
+
 		
-		JMenuBar menuBar = new JMenuBar();
 		frmAmazonFlexChecker.setJMenuBar(menuBar);
-		
-		JMenu mnOptions = new JMenu("Options");
+
 		menuBar.add(mnOptions);
-		
-		JMenuItem loginInfoMenuItem = new JMenuItem("Amazon Flex Account Information");
+
 		loginInfoMenuItem.setToolTipText("Enter your login information for Amazon Flex so the program can log in and check for available time blocks.");
 		mnOptions.add(loginInfoMenuItem);
-		
-		JMenuItem mntmListeningPort = new JMenuItem("Listening Port");
+
 		mnOptions.add(mntmListeningPort);
-		
-		JMenu mntmAutorefresh = new JMenu("Auto-Refresh");
+
 		mnOptions.add(mntmAutorefresh);
-		
-		JCheckBoxMenuItem chckbxmntmEnableAutorefresh = new JCheckBoxMenuItem("Enable Auto-Refresh");
+
 		chckbxmntmEnableAutorefresh.setSelected(true);
 		mntmAutorefresh.add(chckbxmntmEnableAutorefresh);
-		
-		JSeparator separator_1 = new JSeparator();
+
 		mntmAutorefresh.add(separator_1);
-		
-		JLabel lblRefreshIntervalIn = new JLabel("Refresh Interval in Seconds");
+
 		mntmAutorefresh.add(lblRefreshIntervalIn);
-		
+
 		refreshIntervalTextField = new JTextField();
 		refreshIntervalTextField.setText(Integer.toString(prefs.getInt("RI", refreshInterval)));
 		mntmAutorefresh.add(refreshIntervalTextField);
 		refreshIntervalTextField.setColumns(10);
-		
-		JButton btnApply = new JButton("Apply");
+
 		mntmAutorefresh.add(btnApply);
-		
-		JSeparator separator = new JSeparator();
+
 		separator.setOrientation(SwingConstants.VERTICAL);
 		menuBar.add(separator);
-		
-		JButton btnRefresh = new JButton("Refresh");
+
 		btnRefresh.setToolTipText("Refresh the Flex data manually");
 		menuBar.add(btnRefresh);
 		btnRefresh.setFocusable(false);
-		
-		
-		
-		
-		
-		
-		
-		
+
+
 		//Action Listeners
-		
-		mntmListeningPort.addActionListener(new ActionListener() {
+
+		mntmListeningPort.addActionListener(new ActionListener() 
+		{
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -165,6 +165,49 @@ public class AmazonFlexChecker
 				}
 			}
 		});
+		
+		
+		btnRefresh.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				System.out.println("The refresh button was pressed");
+			}
+		});
+		
+		
+		btnApply.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				System.out.println("The apply button was pressed: " + refreshIntervalTextField.getText() + " seconds.");
+				
+				//This next line simply closes the menu when you press apply.
+				javax.swing.MenuSelectionManager.defaultManager().clearSelectedPath();
+				if(Integer.parseInt(refreshIntervalTextField.getText()) <= 5)
+				{
+					JOptionPane.showMessageDialog(frmAmazonFlexChecker, "Sorry, the refresh time must be at least 5 seconds to give it time to finish.", "Refresh Time too Short", JOptionPane.ERROR_MESSAGE);
+					refreshIntervalTextField.setText(Integer.toString(refreshInterval));
+				}
+				else
+				{
+					prefs.putInt("RI", Integer.parseInt(refreshIntervalTextField.getText()));
+					refreshInterval = Integer.parseInt(refreshIntervalTextField.getText());
+				}
+			}
+		});
+		
+		
+		chckbxmntmEnableAutorefresh.addActionListener(new ActionListener() 
+		{
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				prefs.putBoolean("AR", chckbxmntmEnableAutorefresh.isSelected());
+				autoRefresh = chckbxmntmEnableAutorefresh.isSelected();
+			}
+		});
 	}
-
 }
